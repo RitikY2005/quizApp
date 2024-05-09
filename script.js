@@ -1,186 +1,228 @@
+document.addEventListener('DOMContentLoaded',()=>{
 
-
-function main() {
-  // array of question ,its correct answer and options which are shuffled
-
-  //randomize the options
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
-
+  // initialize question answer array 
   const questions_arr = [
     {
       question: "What is the capital of France?",
-      answer: "Paris",
-      options: shuffleArray(["Paris", "Berlin", "London", "Madrid"]),
+      options: ["Paris", "London", "Berlin", "Madrid"],
+      correctAnswerIndex: 0, // Index of Paris
     },
     {
       question: "Who painted the Mona Lisa?",
-      answer: "Leonardo da Vinci",
-      options: shuffleArray([
-        "Leonardo da Vinci",
+      options: [
         "Pablo Picasso",
+        "Leonardo da Vinci",
         "Vincent van Gogh",
         "Michelangelo",
-      ]),
-    },
-    {
-      question: "What is the powerhouse of the cell?",
-      answer: "Mitochondria",
-      options: shuffleArray([
-        "Mitochondria",
-        "Nucleus",
-        "Chloroplast",
-        "Ribosome",
-      ]),
-    },
-    {
-      question: "Which planet is known as the Red Planet?",
-      answer: "Mars",
-      options: shuffleArray(["Mars", "Jupiter", "Saturn", "Venus"]),
-    },
-    {
-      question: "Who wrote 'Romeo and Juliet'?",
-      answer: "William Shakespeare",
-      options: shuffleArray([
-        "William Shakespeare",
-        "J.K. Rowling",
-        "Charles Dickens",
-        "Jane Austen",
-      ]),
-    },
-    {
-      question: "What year did the Titanic sink?",
-      answer: "1912",
-      options: shuffleArray(["1912", "1908", "1915", "1922"]),
+      ],
+      correctAnswerIndex: 1, // Index of Leonardo da Vinci
     },
     {
       question: "What is the tallest mountain in the world?",
-      answer: "Mount Everest",
-      options: shuffleArray(["Mount Everest", "K2", "Kangchenjunga", "Makalu"]),
+      options: ["K2", "Kangchenjunga", "Mount Everest", "Makalu"],
+      correctAnswerIndex: 2 // Index of Mount Everest
     },
     {
-      question: "Who is credited with inventing the light bulb?",
-      answer: "Thomas Edison",
-      options: shuffleArray([
-        "Thomas Edison",
-        "Alexander Graham Bell",
-        "Nikola Tesla",
-        "Galileo Galilei",
-      ]),
+      question: "Which planet is known as the Red Planet?",
+      options: ["Mars", "Jupiter", "Saturn", "Uranus"],
+      correctAnswerIndex: 0// Index of Mars
     },
     {
-      question: "What is the largest mammal in the world?",
-      answer: "Blue whale",
-      options: shuffleArray([
-        "Blue whale",
-        "African elephant",
-        "Giraffe",
-        "Polar bear",
-      ]),
+      question: "What year did the Titanic sink?",
+      options: [ "1905", "1921", "1899","1912"],
+      correctAnswerIndex: 3, // Index of 1912
+    },
+    {
+      question: "Who wrote 'Romeo and Juliet'?",
+      options: [
+        "William Shakespeare",
+        "Charles Dickens",
+        "Jane Austen",
+        "Mark Twain",
+      ],
+      correctAnswerIndex:0 , // Index of William Shakespeare
     },
     {
       question: "What is the chemical symbol for gold?",
-      answer: "Au",
-      options: shuffleArray(["Au", "Ag", "Pb", "Fe"]),
+      options: [ "Ag", "Fe", "Au","Pt"],
+      correctAnswerIndex:2 , // Index of Au
+    },
+    {
+      question: "Which country won the FIFA World Cup in 2018?",
+      options: [ "Croatia","France", "Brazil", "Germany"],
+      correctAnswerIndex: 1, // Index of France
+    },
+    {
+      question: "Who developed the theory of relativity?",
+      options: [
+        
+        "Isaac Newton",
+        "Galileo Galilei",
+        "Albert Einstein",
+        "Stephen Hawking",
+      ],
+      correctAnswerIndex:2 , // Index of Albert Einstein
+    },
+    {
+      question: "Which bird is often used to deliver messages?",
+      options: [ "Eagle", "Ostrich", "Parrot","Pigeon"],
+      correctAnswerIndex: 3, // Index of Pigeon
     },
   ];
 
-  let score=0; // to assign score if right answer
-  // index to traverse through all questions
-  let question_index = 0; // by default on first question
+ 
 
-  // whenever someone clicks on next button load the next set of questions
+  // get our dom elements 
+  const start_quiz_container = document.querySelector(".start_quiz_container");
+  const start_quiz=document.getElementById('start_quiz');
+  const quiz_container= document.querySelector('.container');
+  const score_text=document.querySelector('.status .score_status');
+  const question_number= document.querySelector('.questions_status .index');
+  const question_text=document.querySelector('.questions_section .question');
+  const options=document.querySelectorAll('.options_section li');
+  const next_btn=document.getElementById('next_btn');
+  const score_box=document.querySelector('.score_box');
+  const restart_btn=document.getElementById('restart_btn');
 
-  next_btn.addEventListener("click", () => {
-    // update the question based on what question (question_index) we are on -
-    document.querySelector(".questions_section .question").innerHTML =
-      questions_arr[question_index].question.trim();
+ 
+  let current_question=0; // index to traverse quesitons array
+  let score = 0;  // to count the marks 
 
-    // also update the options on basis on what question_index we are on-
+  // when start button is clicked , start the test 
 
-    document.querySelectorAll(".options_section li").forEach((ele, indx) => {
-      ele.innerHTML = questions_arr[question_index].options[indx].trim();
+  start_quiz.addEventListener('click',()=>{
+     quiz_container.style.display="block";
+     start_quiz_container.style.display="none";
+     loadQuiz();
+  })
 
-      // remove the id's from options(li's ) when next is clicked
-      if (ele.id) {
-        ele.removeAttribute("id");
-      }
-    });
+  function loadQuiz(){
+      if(current_question<questions_arr.length){
+          
 
-    // also update the question number
-
-    document.querySelector(".questions_status .curr_index").innerHTML = `${
-      question_index + 1
-    }/${questions_arr.length}`;
-
-    // update the question_index when next button is clicked
-    if (!(question_index >= questions_arr.length - 1))
-      question_index = question_index + 1; // don't update if we are on last question which is length-1;
-
-    //  remove the msg-box after next is clicked 
-     document.querySelector(".msg-box").style.opacity = "0";
-
-  });
-
-  // let's check if the option clicked (li) is correct
-
-  document.querySelectorAll(".options_section li").forEach((ele) => {
-    ele.addEventListener("click", () => {
-      // extract current index (question_index) from question status
-
-      let curr_index = parseInt(document .querySelector(".questions_status .curr_index").innerHTML.split("/")[0]) - 1;
-      if (curr_index < 0) return;
-
-      // check if the option clicked matches the answer and assign them id's for color change...
-      let flag =
-        ele.innerHTML.toLowerCase().trim() ===
-        questions_arr[curr_index].answer.toLowerCase().trim();
-      if (flag) {
-        ele.id = "option_correct";
-        score += 1;
-        document.querySelector(".score_status").innerHTML = `Score:${score}`;
-
-        // if option is correct show a msg-box displaying that 
-        document.querySelector('.msg-box').style.opacity="1";
         
+         // display the question 
+          question_text.textContent=questions_arr[current_question].question;
+
+         // display options 
+
+         options.forEach((ele,index)=>{
+           // remove the id from any options , if present (correct_option & incorrect_option);
+         if(ele.id) ele.removeAttribute('id');
+           ele.textContent=questions_arr[current_question].options[index];
+         })
+         
+         // display the current question number 
+
+         question_number.textContent=`${current_question+1}/${questions_arr.length}`;
+         
+
+
+         // disable the next button until an option is clicked 
+        
+         next_btn.disabled=true;
+
+         optionClicked();
+
+      
+         
       } else {
-        ele.id = "option_incorrect";
+        // show the score card 
+        
+        showScoreBox();
+
       }
-    });
-  });
+  }
 
-// if restart button is clicked start from first question
+  function showScoreBox(){
+    // show the score card with final score and restart btn
+    score_box.style.visibility = "visible";
+    score_box.querySelector(
+      ".score_box_container h3"
+    ).innerHTML = `Your final score : ${score}`;
+  }
+     
+     
 
-  restart_btn.addEventListener('click',()=>{
-    document.querySelector(".questions_section .question").innerHTML =
-      questions_arr[0].question.trim();
 
-    document.querySelectorAll(".options_section li").forEach((ele, indx) => {
-      ele.innerHTML = questions_arr[0].options[indx].trim();
-      // remove the id's from options(li's ) when next is clicked
-      if (ele.id) {
-        ele.removeAttribute("id");
-      }
-    });
+  let isOptionClicked=false; // tracking if any option is clicked 
 
-    // also update the question number
+  function optionClicked(){
+    // if the clicked answer matches the correct answer or not display accordingly
+    options.forEach((ele,index)=>{
+      // re-enable the click events on options 
+       ele.style.pointerEvents = "auto";
 
-    document.querySelector(".questions_status .curr_index").innerHTML = `1/${questions_arr.length}`;
 
-  });
+      ele.onclick = function () {
+        isOptionClicked = true;
+        if (index === questions_arr[current_question].correctAnswerIndex) {
+
+          ele.id = "option_correct";
+          score++;
+          showScore();
+        } else {
+          ele.id = "option_incorrect";
+          // show the correct option if the clicked option is wrong
+          showCorrectAnswer(current_question);
+        }
+
+        // when an option is clicked , enable the next button
+
+        next_btn.disabled = !isOptionClicked;
+
+       // remove the click events once an option is clicked , don;t let them click multiple answer
+
+       removeClick(current_question);
+
+        // but first increment the curren_question index
+        current_question++;
+      };
+
+  
+    
+        
+      
+    })
+  }
+
+  function removeClick(current_q){
+     options.forEach((ele)=>{
+      
+       ele.style.pointerEvents="none";
+     })
+  }
+
+  function showScore(){
+    score_text.textContent = `Score:${score}`;
+  }
+
+  function showCorrectAnswer(current_q){
+    
+
+     options[questions_arr[current_q].correctAnswerIndex].id="option_correct";
+  }
+
+  // load the question when next button is clicked
+
+  next_btn.addEventListener('click',loadQuiz);
+
+  // restart the quiz 
+
+  restart_btn.onclick=function (){
+    current_question = 0;
+    score=0;
+    // hide the score box again
    
+    score_box.style.visibility = "hidden";
+
+    // load the quiz from start
+    loadQuiz();
+    showScore();
+  }
+ 
 
 
 
 
-}
-
-
-
-
-document.addEventListener('DOMContentLoaded',main);
+})

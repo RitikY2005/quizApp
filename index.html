@@ -10,11 +10,15 @@
     </head>
     <body>
         <main>
+            <div class="start_quiz_container">
+                <p>Click on start to start Quiz</p>
+                <button id="start_quiz">start</button>
+            </div>
            <div class="container">
               <div class="heading">
                 <h2>Quiz App</h2>
                 <div class="status">
-                    <span class="questions_status">Questions:  <span class="curr_index">0/10</span></span>
+                    <span class="questions_status">Questions:  <span class="index">0/10</span></span>
                     <span class="score_status">Score:0 </span>
                 </div>
               </div>
@@ -32,15 +36,17 @@
              <div class="navigation_btns">
                
                 <button id="next_btn">Next</button>
-                <button id="restart_btn">Restart</button>
+               
              </div>
 
            </div>
       
-           <div class="msg-box">
-            <img src="correct.svg" alt="right answer">
-            <span>Correct Answer -Plus one point </span>
-           </div>
+<div class="score_box">
+                <div class="score_box_container">
+                    <h3>Your final score : 30</h3>
+                    <button id="restart_btn">restart</button>
+                </div>
+</div>
 
 
         </main>
